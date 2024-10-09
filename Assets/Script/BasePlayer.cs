@@ -1,13 +1,13 @@
 using JetBrains.Rider.Unity.Editor;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class BasePlayer : MonoBehaviour
 {
-    public Camera m_Camera;
-    public float m_flSpeed;
-    public float m_flSensitivity;
+    [ SerializeField ] private float m_flSpeed;
+    [ SerializeField ] private float m_flSensitivity;
 
     private Rigidbody m_Rb;
 
@@ -21,12 +21,28 @@ public class BasePlayer : MonoBehaviour
     void Update()
     {
         Vector3 vecVelocity = Vector3.zero;
+#if TRUE
         vecVelocity.z = Input.GetAxisRaw( "Vertical" ) * m_flSpeed;
         vecVelocity.x = Input.GetAxisRaw( "Horizontal" ) * m_flSpeed;
+#else
+        switch( Input.inputString )
+        {
+            case "w":
+                break;
+            case "a":
+                break;
+            case "s":
+                break;
+            case "d":
+                break;
+        }
+#endif
         m_Rb.velocity = vecVelocity;
 
         float flMx = ( Input.GetAxis( "Mouse X" ) * m_flSensitivity ) * Time.deltaTime;
 
-        m_Camera.transform.Rotate( 0, flMx, 0 );
+        // todo; wasd rotateuje tylko tak jakby gracz w pó³noc ca³y czas patrzy³
+        m_Rb.transform.Rotate(0, flMx, 0);
+        transform.Rotate( 0, flMx, 0 );
     }
 }
